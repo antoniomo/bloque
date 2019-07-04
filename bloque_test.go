@@ -50,7 +50,9 @@ func TestPopBackItems(t *testing.T) {
 		b.PushBackItem(i)
 	}
 
+	expectedLen := pushAmount - 1
 	for i := pushAmount - 1; i >= 0; i-- {
+
 		item, ok := b.PopBackItem()
 		if !ok {
 			t.Errorf("not ok when popping element %d, BloQue.Len() %d", i, b.Len())
@@ -65,6 +67,11 @@ func TestPopBackItems(t *testing.T) {
 			t.Errorf("popped item doesn't match, have %d, expecting %d", have, expect)
 			break
 		}
+		if have, expect := b.Len(), expectedLen; have != expect {
+			t.Errorf("wrong length, have %d, expecting %d", have, expect)
+			break
+		}
+		expectedLen--
 	}
 	if have, expect := b.Len(), 0; have != expect {
 		t.Errorf("wrong length on emptied BloQue, BloQue.Len() %d, expecting %d", have, expect)
@@ -116,13 +123,15 @@ func TestPopFrontBlock(t *testing.T) {
 	}
 
 	// Assuming the final block isn't full
-	totalBlocks := (pushAmount / defaultBlockSize)
+	totalBlocks := pushAmount / defaultBlockSize
 	for i := 0; i <= totalBlocks; i++ {
 		block, ok := b.PopFrontBlock()
 		if !ok {
 			t.Errorf("not ok when popping front block, BloQue.Len() %d, BloQue.NumBlocks() %d",
 				b.Len(), b.NumBlocks())
 		}
+		t.Logf("not ok when popping front block, BloQue.Len() %d, BloQue.NumBlocks() %d",
+			b.Len(), b.NumBlocks())
 		expectedItems := defaultBlockSize
 		if i == totalBlocks {
 			// Last block has the remainder items

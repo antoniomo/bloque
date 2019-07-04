@@ -118,10 +118,6 @@ func (b *BloQue) NumBlocks() int {
 // PushBackItem ...
 func (b *BloQue) PushBackItem(item interface{}) bool {
 
-	var (
-		completesBlock bool
-	)
-
 	// If the current block is full, allocate the next one on write
 	if b.backIdx == b.blockSize {
 		b.blocks.PushBack(b.newBlock())
@@ -136,11 +132,7 @@ func (b *BloQue) PushBackItem(item interface{}) bool {
 	// TODO: maxLength cap
 
 	// If we completed a block, return true
-	if b.backIdx == b.blockSize {
-		completesBlock = true
-	}
-
-	return completesBlock
+	return (b.backIdx == b.blockSize)
 }
 
 // PopBackItem ...
